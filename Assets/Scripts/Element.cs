@@ -15,11 +15,13 @@ public class Element {
     //boolean om te weten of vmbo-leerlingen deze stof uit hun hoofd moeten kennen
     public bool LeerstofVmbo;
     
-	public Element(int nummer, string afk, string naam, double zwaarte)
+	public Element(int nummer, string afk, string naam, double zwaarte, bool met = true, bool vmbo = true)
     {
         AtomischNummer = nummer;
         Afkorting = afk;
         Naam = naam;
         AtomischeZwaarte = zwaarte;
+        Metaal = met;
+        LeerstofVmbo = vmbo;
     }
 }
