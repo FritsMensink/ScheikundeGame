@@ -7,46 +7,31 @@ using System.Collections;
 [RequireComponent(typeof(MeshCollider))]
 public class TileMap : MonoBehaviour {
 	
-	public int size_x = 100;
-	public int size_z = 50;
+	public int size_x = 10;
+	public int size_z = 5;
 	public float tileSize = 1.0f;
-	
-	public Texture2D terrainTiles;
 	public int tileResolution;
+	public Texture2D defaultTex;
+	public Texture2D[] terrainTiles;
 	
 	// Use this for initialization
 	void Start () {
 		BuildMesh();
 	}
-	
-	Color[][] ChopUpTiles() {
-		int numTilesPerRow = terrainTiles.width / tileResolution;
-		int numRows = terrainTiles.height / tileResolution;
-		
-		Color[][] tiles = new Color[numTilesPerRow*numRows][];
-		
-		for(int y=0; y<numRows; y++) {
-			for(int x=0; x<numTilesPerRow; x++) {
-				tiles[y*numTilesPerRow + x] = terrainTiles.GetPixels( x*tileResolution , y*tileResolution, tileResolution, tileResolution );
-			}
-		}
 
-		return tiles;
-	}
-	
 	void BuildTexture() {
-		DTileMap map = new DTileMap(size_x, size_z);
-		
 		int texWidth = size_x * tileResolution;
 		int texHeight = size_z * tileResolution;
 		Texture2D texture = new Texture2D(texWidth, texHeight);
-		
-		Color[][] tiles = ChopUpTiles();
-		
+		int i=0;
 		for(int y=0; y < size_z; y++) {
 			for(int x=0; x < size_x; x++) {
-				Color[] p = tiles[ map.GetTileAt(x,y) ];
+				Color[] p = defaultTex.GetPixels();
+				if(terrainTiles[i]!=null){
+				 	p = terrainTiles[i].GetPixels();
+				}
 				texture.SetPixels(x*tileResolution, y*tileResolution, tileResolution, tileResolution, p);
+				i++;
 			}
 		}
 		

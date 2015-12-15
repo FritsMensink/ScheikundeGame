@@ -36,24 +36,24 @@ public class RTSCamera : MonoBehaviour {
 	void Update () {
 		// panning     
 
-		if ( Input.GetKey("d") ) {             
+		if ( Input.GetKey(KeyCode.RightArrow) ) {             
 			transform.Translate(Vector3.right * Time.deltaTime * PanSpeed, Space.Self );   
 		}
-		else if ( Input.GetKey("a") ) {            
+		else if ( Input.GetKey(KeyCode.LeftArrow) ) {            
 			transform.Translate(Vector3.right * Time.deltaTime * -PanSpeed, Space.Self );              
 		}
 		
-		if ( Input.GetKey("w") || Input.mousePosition.y >= Screen.height * (1 - ScrollEdge) ) {            
+		if ( Input.GetKey(KeyCode.UpArrow) || Input.mousePosition.y >= Screen.height * (1 - ScrollEdge) ) {            
 			transform.Translate(Vector3.forward * Time.deltaTime * PanSpeed, Space.Self );             
 		}
-		else if ( Input.GetKey("s") || Input.mousePosition.y <= Screen.height * ScrollEdge ) {         
+		else if ( Input.GetKey(KeyCode.DownArrow) || Input.mousePosition.y <= Screen.height * ScrollEdge ) {         
 			transform.Translate(Vector3.forward * Time.deltaTime * -PanSpeed, Space.Self );            
 		}  
 		
-		if ( Input.GetKey("q") || Input.mousePosition.x <= Screen.width * ScrollEdge ) {
+		if ( Input.GetKey(KeyCode.LeftBracket) || Input.mousePosition.x <= Screen.width * ScrollEdge ) {
 			transform.Rotate(Vector3.up * Time.deltaTime * -rotateSpeed, Space.World);
 		}
-		else if ( Input.GetKey("e") || Input.mousePosition.x >= Screen.width * (1 - ScrollEdge) ) {
+		else if ( Input.GetKey(KeyCode.RightBracket) || Input.mousePosition.x >= Screen.width * (1 - ScrollEdge) ) {
 			transform.Rotate(Vector3.up * Time.deltaTime * rotateSpeed, Space.World);
 		}
 				
