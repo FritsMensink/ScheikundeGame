@@ -17,6 +17,13 @@ public class TileMap : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		BuildMesh();
+		GameObject[] g =GameObject.FindGameObjectsWithTag ("Tube");
+		for (int i=0; i<g.Length; i++) {
+			MeshRenderer mesh_renderer = g[i].GetComponent<MeshRenderer>();
+			Color old =mesh_renderer.sharedMaterials[0].color;
+			Color newColor = new Color(old.r, old.b, old.g, 0.3f);          
+			mesh_renderer.sharedMaterials[0].SetColor("_Color", newColor); 
+		}
 	}
 
 	void BuildTexture() {
@@ -68,7 +75,6 @@ public class TileMap : MonoBehaviour {
 				uv[ z * vsize_x + x ] = new Vector2( (float)x / size_x, 1f - (float)z / size_z );
 			}
 		}
-		Debug.Log ("Done Verts!");
 		
 		for(z=0; z < size_z; z++) {
 			for(x=0; x < size_x; x++) {
@@ -84,8 +90,6 @@ public class TileMap : MonoBehaviour {
 			}
 		}
 		
-		Debug.Log ("Done Triangles!");
-		
 		// Create a new Mesh and populate with the data
 		Mesh mesh = new Mesh();
 		mesh.vertices = vertices;
@@ -99,10 +103,58 @@ public class TileMap : MonoBehaviour {
 		
 		mesh_filter.mesh = mesh;
 		mesh_collider.sharedMesh = mesh;
-		Debug.Log ("Done Mesh!");
 		
 		BuildTexture();
 	}
-	
-	
+	public int getPosOFTerrainTile(string name){
+		int a=1;
+		string afkorting="";
+		for (int i=0; i<PeriodiekSysteem.Elementen.Count; i++) {
+			if(PeriodiekSysteem.Elementen[i].Naam.ToUpper()==name){
+				afkorting=PeriodiekSysteem.Elementen[i].Afkorting;
+			}
+		}
+		if(afkorting.Equals("")){
+			a=0;
+		}else{
+			for (int i=0; i<this.terrainTiles.Length; i++) {
+				if(this.terrainTiles[i]!=null){
+					if(terrainTiles[i].name.ToUpper()==afkorting){
+						a=i+3;
+						terrainTiles[i]=defaultTex;
+					}
+				}
+			}
+		}
+		return a;
+	}
+	public void checkCollision(){
+		//check on tube collision
+	}
+	public void changeTile(int tileNumber){
+		MeshRenderer mesh_renderer = GetComponent<MeshRenderer>();
+		Texture2D texture = (Texture2D) mesh_renderer.sharedMaterials[0].mainTexture;	
+		int i = 0;
+		bool check = false;
+		int cy = 0;
+		int cx = 0;
+		for(int y=0; y < size_z; y++) {
+			for(int x=0; x < size_x; x++) {
+				if(i==tileNumber){
+					check = true;
+					cy=y;
+					cx=x;
+				}
+				i++;
+			}
+		}
+		if(check){
+			Color[] p = defaultTex.GetPixels();
+			texture.SetPixels(cx*tileResolution, cy*tileResolution, tileResolution, tileResolution, p);
+		}
+		texture.filterMode = FilterMode.Point;
+		texture.wrapMode = TextureWrapMode.Clamp;
+		texture.Apply();
+		mesh_renderer.sharedMaterials[0].mainTexture=texture;
+	}
 }
