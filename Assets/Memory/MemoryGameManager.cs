@@ -129,8 +129,8 @@ public class MemoryGameManager : MonoBehaviour {
         //select random elements to be played
         for (int i = 0; i < NumberOfElements; i++)
         {
-            int elementNummer = Random.Range(0, PeriodiekSysteem.VmboElementen.Count);
-            Element e = PeriodiekSysteem.VmboElementen[elementNummer];
+            int elementNummer = Random.Range(0, PeriodiekSysteem.GetVmboElementen().Count);
+            Element e = PeriodiekSysteem.GetVmboElementen()[elementNummer];
             if (!elementen.Contains(e))
             {
                 elementen.Add(e);

@@ -11,13 +11,19 @@ public class Element {
 
     //boolean om te weten of vmbo-leerlingen deze stof uit hun hoofd moeten kennen
     public bool LeerstofVmbo;
-    
-	public Element(int nummer, string afk, string naam, double zwaarte, bool vmbo = false)
+
+    //x en y coordinaten voor de plek in het periodiek systeem
+    public int x;
+    public int y;
+
+	public Element(int nummer, string afk, string naam, double zwaarte, int x, int y, bool vmbo = false)
     {
         AtomischNummer = nummer;
         Afkorting = afk;
         Naam = naam;
         AtomischeZwaarte = zwaarte;
+        this.x = x;
+        this.y = y;
         LeerstofVmbo = vmbo;
     }
 }
