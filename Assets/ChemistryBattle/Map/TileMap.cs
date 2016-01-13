@@ -67,12 +67,23 @@ public class TileMap : MonoBehaviour {
 		
 		int[] triangles = new int[ numTris * 3 ];
 
+		BoxCollider[] b = new BoxCollider[numTiles];
+
 		int x, z;
+		int tilenr = 0;
 		for(z=0; z < vsize_z; z++) {
 			for(x=0; x < vsize_x; x++) {
 				vertices[ z * vsize_x + x ] = new Vector3( x*tileSize, 0, -z*tileSize );
 				normals[ z * vsize_x + x ] = Vector3.up;
 				uv[ z * vsize_x + x ] = new Vector2( (float)x / size_x, 1f - (float)z / size_z );
+				foreach(BoxCollider c in (BoxCollider[]) GameObject.Find("Tilemap").GetComponents<BoxCollider> ()) {
+					DestroyImmediate(c);
+				}
+				//create box colliders
+				b[tilenr] = (BoxCollider) GameObject.Find("Tilemap").AddComponent<BoxCollider>();
+				b[tilenr].center= new Vector3(x*(tileSize/2)+2,0,-z*(tileSize/2)-2 );
+				b[tilenr].size= new Vector3(tileSize,tileSize,tileSize);
+				tilenr++;
 			}
 		}
 		
@@ -87,9 +98,10 @@ public class TileMap : MonoBehaviour {
 				triangles[triOffset + 3] = z * vsize_x + x + 		   0;
 				triangles[triOffset + 5] = z * vsize_x + x + vsize_x + 1;
 				triangles[triOffset + 4] = z * vsize_x + x + 		   1;
+
 			}
 		}
-		
+
 		// Create a new Mesh and populate with the data
 		Mesh mesh = new Mesh();
 		mesh.vertices = vertices;
@@ -121,7 +133,7 @@ public class TileMap : MonoBehaviour {
 				if(this.terrainTiles[i]!=null){
 					if(terrainTiles[i].name.ToUpper()==afkorting){
 						a=i+3;
-						terrainTiles[i]=defaultTex;
+
 					}
 				}
 			}
@@ -151,6 +163,7 @@ public class TileMap : MonoBehaviour {
 		if(check){
 			Color[] p = defaultTex.GetPixels();
 			texture.SetPixels(cx*tileResolution, cy*tileResolution, tileResolution, tileResolution, p);
+			terrainTiles[tileNumber]=defaultTex;
 		}
 		texture.filterMode = FilterMode.Point;
 		texture.wrapMode = TextureWrapMode.Clamp;

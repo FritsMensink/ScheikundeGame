@@ -3,8 +3,8 @@ using System.Collections;
 using UnityEngine.UI;
 
 public class SearchTerrain : MonoBehaviour {
-	public Text input;
-	public Text result;
+	Text input;
+	Text result;
 	// Use this for initialization
 	void Start () {
 	
