@@ -12,6 +12,8 @@ public class TileMap : MonoBehaviour {
 	public float tileSize = 1.0f;
 	public int tileResolution;
 	public Texture2D defaultTex;
+	public Texture2D hitTex;
+	public Texture2D missTex;
 	public Texture2D[] terrainTiles;
 	
 	// Use this for initialization
@@ -76,14 +78,14 @@ public class TileMap : MonoBehaviour {
 				vertices[ z * vsize_x + x ] = new Vector3( x*tileSize, 0, -z*tileSize );
 				normals[ z * vsize_x + x ] = Vector3.up;
 				uv[ z * vsize_x + x ] = new Vector2( (float)x / size_x, 1f - (float)z / size_z );
-				foreach(BoxCollider c in (BoxCollider[]) GameObject.Find("Tilemap").GetComponents<BoxCollider> ()) {
-					DestroyImmediate(c);
-				}
-				//create box colliders
-				b[tilenr] = (BoxCollider) GameObject.Find("Tilemap").AddComponent<BoxCollider>();
-				b[tilenr].center= new Vector3(x*(tileSize/2)+2,0,-z*(tileSize/2)-2 );
-				b[tilenr].size= new Vector3(tileSize,tileSize,tileSize);
-				tilenr++;
+				//foreach(BoxCollider c in (BoxCollider[]) GameObject.Find("Tilemap").GetComponents<BoxCollider> ()) {
+				//	DestroyImmediate(c);
+				//}
+				///create box colliders
+				//b[tilenr] = (BoxCollider) GameObject.Find("Tilemap").AddComponent<BoxCollider>();
+				//b[tilenr].center= new Vector3(x*(tileSize/2)+2,0,-z*(tileSize/2)-2 );
+				//b[tilenr].size= new Vector3(tileSize,tileSize,tileSize);
+				//tilenr++;
 			}
 		}
 		
@@ -122,7 +124,7 @@ public class TileMap : MonoBehaviour {
 		int a=1;
 		string afkorting="";
 		for (int i=0; i<PeriodiekSysteem.Elementen.Count; i++) {
-			if(PeriodiekSysteem.Elementen[i].Naam.ToUpper()==name){
+			if(PeriodiekSysteem.Elementen[i].Naam.ToUpper().Equals(name)){
 				afkorting=PeriodiekSysteem.Elementen[i].Afkorting;
 			}
 		}
@@ -130,10 +132,9 @@ public class TileMap : MonoBehaviour {
 			a=0;
 		}else{
 			for (int i=0; i<this.terrainTiles.Length; i++) {
-				if(this.terrainTiles[i]!=null){
-					if(terrainTiles[i].name.ToUpper()==afkorting){
-						a=i+3;
-
+				if (this.terrainTiles [i].name.ToUpper() != "NONE") {
+					if (this.terrainTiles [i].name.ToUpper ().Equals(afkorting.ToUpper())) {
+						return i + 3;
 					}
 				}
 			}
@@ -143,7 +144,7 @@ public class TileMap : MonoBehaviour {
 	public void checkCollision(){
 		//check on tube collision
 	}
-	public void changeTile(int tileNumber){
+	public void changeTile(int tileNumber, int status){
 		MeshRenderer mesh_renderer = GetComponent<MeshRenderer>();
 		Texture2D texture = (Texture2D) mesh_renderer.sharedMaterials[0].mainTexture;	
 		int i = 0;
@@ -160,8 +161,13 @@ public class TileMap : MonoBehaviour {
 				i++;
 			}
 		}
+		Color[] p = defaultTex.GetPixels();
+		if (status == 1) {
+			p = hitTex.GetPixels ();
+		} else if(status==2){
+			p = missTex.GetPixels ();
+		}
 		if(check){
-			Color[] p = defaultTex.GetPixels();
 			texture.SetPixels(cx*tileResolution, cy*tileResolution, tileResolution, tileResolution, p);
 			terrainTiles[tileNumber]=defaultTex;
 		}

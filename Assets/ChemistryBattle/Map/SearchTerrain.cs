@@ -22,17 +22,19 @@ public class SearchTerrain : MonoBehaviour {
 		for (int i=0; i<PeriodiekSysteem.Elementen.Count; i++) {
 			if(PeriodiekSysteem.Elementen[i].Naam.ToUpper()==input.text.ToUpper()){
 				int tileNum = t.getPosOFTerrainTile(input.text.ToUpper());
-				Debug.Log(tileNum);
+				Debug.Log (tileNum);
 				if(tileNum>=2){
 					found=true;
-					//check if colliding with a tube
-					//true then
-					t.changeTile(tileNum-3);
-					resultText+="Gefeliciteerd, deel van reageerbuis gevonden!";
-					//else
-					//text =  Helaas, geen reageerbuis gevonden!
+					var up = transform.TransformDirection (Vector3.up);
+					if (Physics.Raycast (t.transform.position, up, 10)) {
+						t.changeTile (tileNum - 3,1);
+						resultText += "Raak! Gefeliciteerd, deel van reageerbuis gevonden!";
+					} else {
+						t.changeTile (tileNum - 3,2);
+						resultText += "Mis! voer een ander element in.";
+					}
 				}else if(tileNum==1){
-					resultText+="Op dit element is al gezocht!";
+					resultText+="Op dit element is al gezocht, probeer een ander.";
 					found=true;
 				}
 			}
