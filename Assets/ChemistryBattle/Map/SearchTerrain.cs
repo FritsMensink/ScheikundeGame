@@ -47,24 +47,29 @@ public class SearchTerrain : MonoBehaviour {
 					i--;
 				}
 			}
-		} else {
-			for (int i = 0; i < simpleTargets.Length; i++) {
+		}
+		if(gametype == 0){
+			for (int i = 1; i < simpleTargets.Length; i++) {
 				int randInt = Random.Range (0, 161);
 				if (!(t.terrainTiles[randInt].name.Equals("NONE"))) {
 					simpleTargets [i] = randInt;
 					string name="";
 					for (int a = 0; a < PeriodiekSysteem.Elementen.Count; a++) {
-						if(PeriodiekSysteem.Elementen[a].Afkorting.ToUpper().Equals(t.terrainTiles[randInt].name.ToUpper())){
+						if(PeriodiekSysteem.Elementen[a].Afkorting.ToUpper().Equals(t.terrainTiles[randInt].name.ToUpper())&&PeriodiekSysteem.Elementen[a].LeerstofVmbo){
 							name=PeriodiekSysteem.Elementen[a].Naam;
 						}
-							}
-							hintText += name.Substring(0,2)+", ";
+					}
+					if (name != "") {
+						hintText += name.Substring(0,2) + ", ";
+					} else {
+						i--;
+					}
 				} else {
 					i--;
 				}
 			}
 		}
-		hint.text = hintText;
+		hint.text = hintText.Substring(0,hintText.Length-2);
 		print (targets[0]);
 	}	
 	// Update is called once per frame
