@@ -3,48 +3,69 @@ using System.Collections;
 
 public class ElementTile : MonoBehaviour {
     public Element Element;
+    private bool dragging = false;
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start () {
 	    
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
 	}
 
     public void SetText()
     {
         TextMesh tm = this.GetComponentInChildren<TextMesh>();
-        tm.text = "" + Element.AtomischNummer + "\n" + Element.Afkorting + "\n" + Element.Naam + "\n" + Element.AtomischeZwaarte;
+        tm.text = "" + Element.AtomischNummer + "\n" + Element.Afkorting + "\n" + Element.Naam + "\n" + System.Math.Round(Element.AtomischeZwaarte, 4);
     }
 
-    //TODO
-    bool IsInGoodPosition(int x, int y)
+    public bool IsInGoodPosition()
     {
-        bool goodPosition = false;
-        Vector3 position = new Vector3(2 * x, 0.5f, (-2 * y));
-        return goodPosition;
+        if (transform.position.x <  (2 * Element.x + 0.5) 
+            && transform.position.x > (2 * Element.x - 0.5)
+            && transform.position.z < (-2 * Element.y + 0.5)
+            && transform.position.z > (-2 * Element.y - 0.5))
+        {
+            return true;
+        } else
+        {
+            return false;
+        }
     }
 
-    /*
-    void OnMouseOver()
+    void OnMouseDown()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (!IsInGoodPosition())
         {
-            if (IsSocket)
-            {
-                GetComponentInParent<Systeembord>().StartConnecting(this);
-            }
+            dragging = true;
         }
-        else
+    }
+
+    void OnMouseUp()
+    {
+        dragging = false;
+        if (IsInGoodPosition())
         {
-            if (IsSocket)
+            Vector3 position = new Vector3(2 * Element.x, 0.5f, (-2 * Element.y));
+            transform.position = position;
+        }
+    }
+
+    void Update()
+    {
+        if (dragging)
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit[] hits;
+            hits = Physics.RaycastAll(ray);
+            for (int i = 0; i < hits.Length; i++)
             {
-                GetComponentInParent<Systeembord>().EndConnecting(this);
+                RaycastHit hit = hits[i];
+                if (hit.transform.CompareTag("terrain"))
+                {
+                    Vector3 rayPoint = ray.GetPoint(hit.distance);
+                    Vector3 newPosition = new Vector3(rayPoint.x, transform.position.y, rayPoint.z);
+                    transform.position = newPosition;
+                    break;
+                }
             }
         }
     }
-    */
 }

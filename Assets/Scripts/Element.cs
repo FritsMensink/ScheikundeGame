@@ -16,7 +16,14 @@ public class Element {
     public int x;
     public int y;
 
-	public Element(int nummer, string afk, string naam, double zwaarte, int x, int y, bool vmbo = false)
+    public enum Metaal
+    {
+        Metalloïde, NietMetaal, Halogeen, Edelgas, Alkalimetaal, Aardalkalimetaal, Lanthanide, Actinide, Overgangsmetaal, PostTransitionMetaal
+    }
+
+    public Metaal MetaalSoort;
+
+	public Element(int nummer, string afk, string naam, double zwaarte, int x, int y, Metaal soort, bool vmbo = false)
     {
         AtomischNummer = nummer;
         Afkorting = afk;
@@ -24,6 +31,7 @@ public class Element {
         AtomischeZwaarte = zwaarte;
         this.x = x;
         this.y = y;
+        MetaalSoort = soort;
         LeerstofVmbo = vmbo;
     }
 }

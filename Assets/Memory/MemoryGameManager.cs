@@ -215,4 +215,9 @@ public class MemoryGameManager : MonoBehaviour {
     {
         SceneManager.LoadScene("MainMenu");
     }
+
+    public void Reset()
+    {
+        SceneManager.LoadScene("Memory");
+    }
 }
