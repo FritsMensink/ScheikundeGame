@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 using UnityEngine.UI;
+
 
 
 public class SearchTerrain : MonoBehaviour {
@@ -12,6 +14,7 @@ public class SearchTerrain : MonoBehaviour {
 	int[] simpleTargets;
 	Text end;
 	Text hint;
+	TileMap t;
 	public int gametype;
 	// Use this for initialization
 	void Start () {
@@ -22,14 +25,14 @@ public class SearchTerrain : MonoBehaviour {
 		score = GameObject.FindWithTag("Score").GetComponent<Text>();
 		score.text = "Score: 0";
 		bestscore = GameObject.FindWithTag("bestscore").GetComponent<Text>();
-		bestscore.text = "Topscore: "+PlayerPrefs.GetInt ("bestscore");
+		bestscore.text = "Laatste score: "+PlayerPrefs.GetInt ("bestscore");
 		hint = GameObject.FindWithTag("hint").GetComponent<Text>();
 		hint.text = "";
-		string hintText= "Hint: ";
-		TileMap t = GetComponent<TileMap> ();
+		t = GetComponent<TileMap> ();
+		string hintText= "Doel: ";
 		if (gametype == 1) {
 			for (int i = 0; i < targets.Length; i++) {
-				int randInt = Random.Range (0, 161);
+				int randInt = UnityEngine.Random.Range (0, 161);
 				if (!(t.terrainTiles[randInt].name.ToUpper().Equals("NONE")) ) {
 					targets [i] = randInt;
 					string name="";
@@ -49,18 +52,18 @@ public class SearchTerrain : MonoBehaviour {
 			}
 		}
 		if(gametype == 0){
-			for (int i = 1; i < simpleTargets.Length; i++) {
-				int randInt = Random.Range (0, 161);
+			for (int i = 0; i < simpleTargets.Length; i++) {
+				int randInt = UnityEngine.Random.Range (0, 161);
 				if (!(t.terrainTiles[randInt].name.Equals("NONE"))) {
 					simpleTargets [i] = randInt;
 					string name="";
 					for (int a = 0; a < PeriodiekSysteem.Elementen.Count; a++) {
 						if(PeriodiekSysteem.Elementen[a].Afkorting.ToUpper().Equals(t.terrainTiles[randInt].name.ToUpper())&&PeriodiekSysteem.Elementen[a].LeerstofVmbo){
-							name=PeriodiekSysteem.Elementen[a].Naam;
+							name=PeriodiekSysteem.Elementen[a].Afkorting;
 						}
 					}
 					if (name != "") {
-						hintText += name.Substring(0,2) + ", ";
+						hintText += name + ", ";
 					} else {
 						i--;
 					}
@@ -70,11 +73,62 @@ public class SearchTerrain : MonoBehaviour {
 			}
 		}
 		hint.text = hintText.Substring(0,hintText.Length-2);
-		print (targets[0]);
-	}	
+		foreach(int k in targets){
+			//print (k);			
+		}
+		foreach(int p in simpleTargets){
+			//print (p);			
+		}
+
+	}
+	public void giveHint(){
+		score = GameObject.FindWithTag("Score").GetComponent<Text>();
+		int totalscore = System.Int32.Parse(score.text.Substring(7));
+		totalscore += -40;
+		score.text="Score: "+totalscore;
+	}
+	void changeDoel(){
+		string doelText="Doel: ";
+		string name="";
+		if (gametype == 0) {
+			foreach (int i in simpleTargets) {
+				//print (i);
+				if (i != 163) {
+					
+					for (int a = 0; a < PeriodiekSysteem.Elementen.Count; a++) {
+						name="";
+						if(PeriodiekSysteem.Elementen[a].Afkorting.ToUpper().Equals(t.terrainTiles[i].name.ToUpper())&&PeriodiekSysteem.Elementen[a].LeerstofVmbo){
+							name=PeriodiekSysteem.Elementen[a].Afkorting;
+						}
+						if (name != "") {
+							doelText += name + ", ";
+						}
+					}
+				}
+			}
+		}
+		if (gametype == 1) {
+			foreach (int i in targets) {
+				if (i != 163) {
+					for (int a = 0; a < PeriodiekSysteem.Elementen.Count; a++) {
+						name="";
+						if (PeriodiekSysteem.Elementen [a].Afkorting.ToUpper ().Equals (t.terrainTiles [i].name.ToUpper ())) {
+							name = PeriodiekSysteem.Elementen [a].Afkorting;
+						}
+						if (name != "") {
+							doelText += name + ", ";
+						}
+					}
+				}
+			}
+		}
+		hint.text = doelText.Substring(0,doelText.Length-2);
+	}
 	// Update is called once per frame
 	void Update () {
-	
+		if (Input.GetKeyDown (KeyCode.KeypadEnter) || Input.GetKeyDown ("enter")||Input.GetKeyDown ("return")) {
+			this.search ();
+		}
 	}
 	public void search(){
 		input = GameObject.FindWithTag("Input").GetComponent<Text>();
@@ -82,7 +136,7 @@ public class SearchTerrain : MonoBehaviour {
 		score = GameObject.FindWithTag("Score").GetComponent<Text>();
 		TileMap t = GetComponent<TileMap> ();
 		bool found = false;
-		string resultText = "Result: ";
+		string resultText = "Resultaat: ";
 		int totalscore = System.Int32.Parse(score.text.Substring(7));
 		for (int i=0; i<PeriodiekSysteem.Elementen.Count; i++) {
 			if(PeriodiekSysteem.Elementen[i].Naam.ToUpper()==input.text.ToUpper()){
@@ -94,16 +148,26 @@ public class SearchTerrain : MonoBehaviour {
 						t.changeTile (tileNum,1);
 						resultText += "Goedzo! U heeft een verloren element gevonden";
 						totalscore += 20;
-						if (has_won ()) {
-							if (PlayerPrefs.GetInt ("bestscore")!=0||PlayerPrefs.GetInt ("bestscore") < totalscore) {
-								PlayerPrefs.SetInt ("bestscore", totalscore);
+						changeDoel ();
+						if (gametype==1) {
+							int pos = Array.IndexOf(targets, tileNum);
+							if(pos>-1){
+								targets[pos]=163;
 							}
+						}
+						if (gametype==0) {
+							int pos = Array.IndexOf(simpleTargets, tileNum);
+							if(pos>-1){
+								simpleTargets[pos]=163;
+							}
+						}
+						if (has_won ()) {
+							PlayerPrefs.SetInt ("bestscore", totalscore);
 							end.text = "Gefeliciteerd U heeft gewonnen!\nScore: "+totalscore;
 						}
 					} else {
 						t.changeTile (tileNum,2);
 						resultText += "Mis! voer een ander element in.";
-						totalscore += -1;
 					}
 				}else if(tileNum==1){
 					resultText+="Op dit element is al gezocht, probeer een ander.";
@@ -149,7 +213,7 @@ public class SearchTerrain : MonoBehaviour {
 				return true;
 			}
 		}
-		if (gametype == 2) {
+		if (gametype == 0) {
 			for (int i = 0; i < simpleTargets.Length; i++) {
 				if (simpleTargets [i] == 163) {
 					count++;
