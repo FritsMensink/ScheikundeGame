@@ -69,10 +69,10 @@ public class TileMap : MonoBehaviour {
 		
 		int[] triangles = new int[ numTris * 3 ];
 
-		BoxCollider[] b = new BoxCollider[numTiles];
+		//BoxCollider[] b = new BoxCollider[numTiles];
 
 		int x, z;
-		int tilenr = 0;
+		//int tilenr = 0;
 		for(z=0; z < vsize_z; z++) {
 			for(x=0; x < vsize_x; x++) {
 				vertices[ z * vsize_x + x ] = new Vector3( x*tileSize, 0, -z*tileSize );

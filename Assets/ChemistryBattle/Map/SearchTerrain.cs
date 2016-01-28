@@ -15,11 +15,12 @@ public class SearchTerrain : MonoBehaviour {
 	Text end;
 	Text hint;
 	TileMap t;
+	InputField inpf;
 	public int gametype;
 	// Use this for initialization
 	void Start () {
-		targets = new int[10];
-		simpleTargets = new int[5];
+		targets = new int[18];
+		simpleTargets = new int[10];
 		end = GameObject.FindWithTag("end").GetComponent<Text>();
 		end.text = "";
 		score = GameObject.FindWithTag("Score").GetComponent<Text>();
@@ -73,13 +74,6 @@ public class SearchTerrain : MonoBehaviour {
 			}
 		}
 		hint.text = hintText.Substring(0,hintText.Length-2);
-		foreach(int k in targets){
-			//print (k);			
-		}
-		foreach(int p in simpleTargets){
-			//print (p);			
-		}
-
 	}
 	public void giveHint(){
 		score = GameObject.FindWithTag("Score").GetComponent<Text>();
@@ -132,6 +126,7 @@ public class SearchTerrain : MonoBehaviour {
 	}
 	public void search(){
 		input = GameObject.FindWithTag("Input").GetComponent<Text>();
+		inpf = GameObject.FindWithTag("inpf").GetComponent<InputField>();
 		result = GameObject.FindWithTag("Result").GetComponent<Text>();
 		score = GameObject.FindWithTag("Score").GetComponent<Text>();
 		TileMap t = GetComponent<TileMap> ();
@@ -146,7 +141,7 @@ public class SearchTerrain : MonoBehaviour {
 					tileNum = tileNum - 3;
 					if (this.is_a_hit(tileNum)) {
 						t.changeTile (tileNum,1);
-						resultText += "Goedzo! U heeft een verloren element gevonden";
+						resultText += "Goedzo! U heeft een gesloopt element hersteld.";
 						totalscore += 20;
 						changeDoel ();
 						if (gametype==1) {
@@ -164,6 +159,7 @@ public class SearchTerrain : MonoBehaviour {
 						if (has_won ()) {
 							PlayerPrefs.SetInt ("bestscore", totalscore);
 							end.text = "Gefeliciteerd U heeft gewonnen!\nScore: "+totalscore;
+							inpf.enabled = false;
 						}
 					} else {
 						t.changeTile (tileNum,2);
@@ -180,6 +176,7 @@ public class SearchTerrain : MonoBehaviour {
 		}
 		result.text=resultText;
 		score.text="Score: "+totalscore;
+		inpf.text = "";
 	}
 	public bool is_a_hit(int tileNum){
 		if (this.gametype == 1) {
@@ -209,7 +206,7 @@ public class SearchTerrain : MonoBehaviour {
 					count++;
 				}
 			}
-			if (count == 10) {
+			if (count == targets.Length) {
 				return true;
 			}
 		}
@@ -219,7 +216,7 @@ public class SearchTerrain : MonoBehaviour {
 					count++;
 				}
 			}
-			if (count == 5) {
+			if (count == simpleTargets.Length) {
 				return true;
 			}
 		}
