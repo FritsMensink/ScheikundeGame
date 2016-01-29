@@ -17,6 +17,7 @@ public class MemoryGameManager : MonoBehaviour {
     public GameObject Card9;
     public GameObject Card10;
     public Text result;
+    public Text Guesses;
 
     private bool AbleToClickCards = true;
     private float TimeLeft = 0;
@@ -24,7 +25,7 @@ public class MemoryGameManager : MonoBehaviour {
     private List<Combinatie> Combinaties = new List<Combinatie>();
     private Card ActiveCard;
     private Card SelectedCard;
-    private int NumberOfGuesses;
+    private int NumberOfGuesses = 0;
     private int NumberOfCombinationsFound;
 
     void Start ()
@@ -34,7 +35,6 @@ public class MemoryGameManager : MonoBehaviour {
         //create the cards
         foreach (Element e in ElementsInPlay)
         {
-            print(e.Naam);
             Combinaties.Add(new Combinatie(e.Naam, e.Afkorting));
             Combinaties.Add(new Combinatie(e.Afkorting, e.Naam));
         }
@@ -49,6 +49,7 @@ public class MemoryGameManager : MonoBehaviour {
         AddCombinationsToCards();
 
         result = GameObject.FindWithTag("Result").GetComponent<Text>();
+        Guesses = GameObject.FindWithTag("Score").GetComponent<Text>();
     }
 
     // Update is called once per frame
@@ -85,7 +86,6 @@ public class MemoryGameManager : MonoBehaviour {
                         SelectedCard = null;
                     }
                     else { 
-                        print("hit " + selected.name);
                         SelectedCard.Flip();
 
                         if (ActiveCard == null)
@@ -97,6 +97,7 @@ public class MemoryGameManager : MonoBehaviour {
                         else
                         {
                             NumberOfGuesses++;
+                            Guesses.text = "Aantal pogingen: " + NumberOfGuesses;
                             if (ActiveCard.matchingText == SelectedCard.text)
                             {
                                 result.text = "Juiste combinatie!";
