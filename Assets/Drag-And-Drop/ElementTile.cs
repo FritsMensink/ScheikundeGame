@@ -10,10 +10,13 @@ public class ElementTile : MonoBehaviour {
 	    
 	}
 
-    public void SetText()
+    public void SetText(bool complete)
     {
         TextMesh tm = this.GetComponentInChildren<TextMesh>();
-        tm.text = "" + Element.AtomischNummer + "\n" + Element.Afkorting + "\n" + Element.Naam + "\n" + System.Math.Round(Element.AtomischeZwaarte, 4);
+        if (complete)
+            tm.text = "" + Element.AtomischNummer + "\n" + Element.Afkorting + "\n" + Element.Naam + "\n" + System.Math.Round(Element.AtomischeZwaarte, 4);
+        else
+            tm.text = " " + "\n" + Element.Afkorting + "\n" + Element.Naam;
     }
 
     public bool IsInGoodPosition()

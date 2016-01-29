@@ -9,6 +9,8 @@ public class DragAndDropGameManager : MonoBehaviour {
     public GameObject ElementObject;
     public Text result;
 
+    public bool Won = false;
+
     // Use this for initialization
     void Start () {
         //create all elementTiles
@@ -32,7 +34,7 @@ public class DragAndDropGameManager : MonoBehaviour {
             t.parent = ElementObject.transform;
             ElementTile ETile = t.GetComponent<ElementTile>();
             ETile.Element = e;
-            ETile.SetText();
+            ETile.SetText(false);
             Color c = GetElementColor(e);
             t.GetComponent<Renderer>().material.color = c;
         }
@@ -70,7 +72,7 @@ public class DragAndDropGameManager : MonoBehaviour {
 
     void CheckWinConditions()
     {
-        bool Won = true;
+        Won = true;
         ElementTile[] tiles = ElementObject.GetComponentsInChildren<ElementTile>();
         foreach (ElementTile tile in tiles)
         {
@@ -83,6 +85,10 @@ public class DragAndDropGameManager : MonoBehaviour {
         if (Won)
         {
             result.text = "Je hebt gewonnen!";
+            foreach (ElementTile tile in tiles)
+            {
+                tile.SetText(true);
+            }
         }
     }
 
