@@ -141,7 +141,7 @@ public class SearchTerrain : MonoBehaviour {
 					tileNum = tileNum - 3;
 					if (this.is_a_hit(tileNum)) {
 						t.changeTile (tileNum,1);
-						resultText += "Goedzo! U heeft een gesloopt element hersteld.";
+						resultText += "Goed zo! U heeft een gesloopt element hersteld.";
 						totalscore += 20;
 						changeDoel ();
 						if (gametype==1) {
@@ -158,7 +158,7 @@ public class SearchTerrain : MonoBehaviour {
 						}
 						if (has_won ()) {
 							PlayerPrefs.SetInt ("bestscore", totalscore);
-							end.text = "Gefeliciteerd U heeft gewonnen!\nScore: "+totalscore;
+							end.text = "Gefeliciteerd, U heeft gewonnen!\nScore: "+totalscore;
 							inpf.enabled = false;
 						}
 					} else {
